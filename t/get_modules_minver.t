@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use Test::Deep;
-use Test::More tests => 8;
+use Test::More tests => 11;
 use File::Basename;
 use File::Spec::Functions qw(catfile);
 
@@ -43,3 +43,19 @@ my %found = $extor->get_modules_minver( $test );
 ok( ! $extor->error, "no error for parseable file [$test]" );
 cmp_deeply( \%found, \%wanted, 'all requires found, but no more' );
 }
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# Try it with a file with some minimum version (including perl)
+{
+my $file = catfile( qw(corpus Version.pm) );
+ok( -e $file, "test file is there" );
+
+my %wanted = (
+    'perl'          => '5.006',
+    'Local::MinVer' => '0.50',
+);
+my %found = $extor->get_modules_minver( $file );
+ok( ! $extor->error, "no error for parseable file [$file]" );
+cmp_deeply( \%found, \%wanted, 'all requires found, but no more' );
+}
+

@@ -1,5 +1,6 @@
 Changes
 corpus/Repeated.pm
+corpus/Version.pm
 examples/extract_modules
 lib/Use.pm
 LICENSE
