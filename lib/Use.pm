@@ -138,6 +138,30 @@ sub get_modules_minver {
 			}
 		}
 
+	{ # Moose specificities
+	# let's fetch top-level statements
+	my @statements =
+		grep { $_->child(0)->isa('PPI::Token::Word') }
+		grep { ref($_) eq 'PPI::Statement' } # no ->isa()
+		$Document->children;
+
+	# roles: with ...
+	my @roles =
+		map  { $_->child(2)->string }
+		grep { $_->child(0)->literal eq 'with' }
+		@statements;
+	@prereqs{ @roles } = (0) x @roles;
+
+	# inheritance: extends ...
+	my @bases =
+		map  { $_->string }
+		grep { $_->isa('PPI::Token::Quote') }
+		map  { $_->children }
+		grep { $_->child(0)->literal eq 'extends' }
+		@statements;
+	@prereqs{ @bases } = (0) x @bases;
+	}
+
 	return %prereqs;
 	}
 

@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use Test::Deep;
-use Test::More tests => 14;
+use Test::More tests => 17;
 use File::Basename;
 use File::Spec::Functions qw(catfile);
 
@@ -74,6 +74,23 @@ my %wanted = (
     'Local::Base::parent1' => 0,
     'Local::Base::parent2' => 0,
     'Local::Base::parent3' => 0,
+);
+my %found = $extor->get_modules_minver( $file );
+ok( ! $extor->error, "no error for parseable file [$file]" );
+cmp_deeply( \%found, \%wanted, 'all requires found, but no more' );
+}
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# Try it with a file with some moose stuff
+{
+my $file = catfile( qw(corpus Moose.pm) );
+ok( -e $file, "test file is there" );
+
+my %wanted = (
+    'Local::Base::Moose1' => 0,
+    'Local::Base::Moose2' => 0,
+    'Local::Role'         => 0,
 );
 my %found = $extor->get_modules_minver( $file );
 ok( ! $extor->error, "no error for parseable file [$file]" );

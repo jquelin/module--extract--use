@@ -1,5 +1,6 @@
 Changes
 corpus/Inheritance.pm
+corpus/Moose.pm
 corpus/Repeated.pm
 corpus/Version.pm
 examples/extract_modules
