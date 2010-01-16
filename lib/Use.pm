@@ -99,22 +99,16 @@ sub get_modules_minver {
 		return;
 		}
 
+	# parse the document with ppi and extract include statements
 	require PPI;
-
 	my $Document = eval { PPI::Document->new( $file ) };
 	unless( $Document )
 		{
 		$self->_set_error( ref( $self ) . ": Could not parse file [$file]" );
 		return;
 		}
-		
-	my $modules = $Document->find( 
-		sub {
-			$_[1]->isa( 'PPI::Statement::Include' )  && 
-				( $_[1]->type eq 'use' || $_[1]->type eq 'require' )
-			}
-		);
-	
+	my $modules = $Document->find( 'Statement::Include' );
+
 	my @modules = eval { map { $_->module } @$modules };
 	my %modules;
 	@modules{ @modules } = (0) x @modules;
