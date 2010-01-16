@@ -107,7 +107,7 @@ sub get_modules_minver {
 		$self->_set_error( ref( $self ) . ": Could not parse file [$file]" );
 		return;
 		}
-	my $modules = $Document->find( 'Statement::Include' );
+	my $modules = $Document->find( 'Statement::Include' ) || [];
 
 	# extract minimum versions
 	my %prereqs;
