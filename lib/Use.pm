@@ -76,6 +76,21 @@ use the order to infer anything.
 sub get_modules {
 	my( $self, $file ) = @_;
 
+	my %modules = $self->get_modules_minver($file);
+	return keys %modules;
+	}
+
+=item get_modules_minver( FILE )
+
+Returns a hash of module with their minimum version explicity use-d in
+FILE. The version will be 0 if not specified in code. Returns undef if
+the file does not exist or if it can't parse the file.
+
+=cut
+
+sub get_modules_minver {
+	my( $self, $file ) = @_;
+
 	$_[0]->_clear_error;
 
 	unless( -e $file )
@@ -100,11 +115,13 @@ sub get_modules {
 			}
 		);
 	
-	my %Seen;
-	my @modules = grep { ! $Seen{$_}++ } eval { map { $_->module } @$modules };
-
-	@modules;
+	my @modules = eval { map { $_->module } @$modules };
+	my %modules;
+	@modules{ @modules } = (0) x @modules;
+	return %modules;
 	}
+
+
 
 =item error
 
