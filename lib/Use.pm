@@ -125,7 +125,18 @@ sub get_modules_minver {
 		    ? $include->module_version->content
 		    : 0;
 		$prereqs{ $include->module } = $version;
-	    }
+
+		# inheritance: extract base class
+		if ( $include->module =~ /^(base|parent)$/ )
+			{
+			# the content is in the 5th token
+			my $meat = $include->child(4);
+			my @parents = $meat->isa('PPI::Token::QuoteLike::Words')
+				? ( $meat->literal )     # use base qw{ ... }
+				: ( $meat->string  );	 # use base "..."
+			@prereqs{ @parents } = (0) x @parents;
+			}
+		}
 
 	return %prereqs;
 	}

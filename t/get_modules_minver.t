@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use Test::Deep;
-use Test::More tests => 11;
+use Test::More tests => 14;
 use File::Basename;
 use File::Spec::Functions qw(catfile);
 
@@ -53,6 +53,27 @@ ok( -e $file, "test file is there" );
 my %wanted = (
     'perl'          => '5.006',
     'Local::MinVer' => '0.50',
+);
+my %found = $extor->get_modules_minver( $file );
+ok( ! $extor->error, "no error for parseable file [$file]" );
+cmp_deeply( \%found, \%wanted, 'all requires found, but no more' );
+}
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# Try it with a file with some inheritance
+{
+my $file = catfile( qw(corpus Inheritance.pm) );
+ok( -e $file, "test file is there" );
+
+my %wanted = (
+    'base'                 => 0,
+    'parent'               => 0,
+    'Local::Base::base1'   => 0,
+    'Local::Base::base2'   => 0,
+    'Local::Base::base3'   => 0,
+    'Local::Base::parent1' => 0,
+    'Local::Base::parent2' => 0,
+    'Local::Base::parent3' => 0,
 );
 my %found = $extor->get_modules_minver( $file );
 ok( ! $extor->error, "no error for parseable file [$file]" );
