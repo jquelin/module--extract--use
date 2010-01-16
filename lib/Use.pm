@@ -109,10 +109,25 @@ sub get_modules_minver {
 		}
 	my $modules = $Document->find( 'Statement::Include' );
 
-	my @modules = eval { map { $_->module } @$modules };
-	my %modules;
-	@modules{ @modules } = (0) x @modules;
-	return %modules;
+	# extract minimum versions
+	my %prereqs;
+	foreach my $include ( @$modules )
+		{
+		# minimum perl version
+		if ( $include->version )
+			{
+			$prereqs{perl} = $include->version;
+			next;
+			}
+
+		# regular modules
+		my $version = $include->module_version
+		    ? $include->module_version->content
+		    : 0;
+		$prereqs{ $include->module } = $version;
+	    }
+
+	return %prereqs;
 	}
 
 
