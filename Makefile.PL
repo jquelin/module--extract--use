@@ -13,6 +13,7 @@ WriteMakefile(
 	
 	'PREREQ_PM'    => { 
 		'PPI'          => '0',
+		'Test::Deep'   => '0',
 		'Test::More'   => '0',
 		'Test::Output' => '0',
 		},
